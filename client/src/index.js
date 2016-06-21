@@ -1,6 +1,6 @@
 import GameState from 'states/GameState';
 import Io from 'socket.io-client'
-let socket = Io(`//localhost:8080`)
+let socket = Io(`//d4e36ce0.ngrok.io`)
 const baseSize = {
 	width: Math.floor(window.innerWidth),
 	height: Math.floor(window.innerHeight),

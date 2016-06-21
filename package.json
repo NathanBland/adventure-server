@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/NathanBland/adventure-server#readme",
   "dependencies": {
+    "nodemon": "^1.9.2",
     "socket.io": "^1.4.6"
   }
 }

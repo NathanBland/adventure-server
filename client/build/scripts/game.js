@@ -7288,7 +7288,7 @@ function _inherits(subClass, superClass) {
 	}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var socket = (0, _socket2.default)('//localhost:8080');
+var socket = (0, _socket2.default)('//d4e36ce0.ngrok.io');
 var baseSize = {
 	width: Math.floor(window.innerWidth),
 	height: Math.floor(window.innerHeight)
@@ -7319,7 +7319,243 @@ var Game = function (_Phaser$Game) {
 
 new Game();
 
-},{"socket.io-client":34,"states/GameState":50}],49:[function(require,module,exports){
+},{"socket.io-client":34,"states/GameState":52}],49:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && (typeof call === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var Opponent = function (_Phaser$Graphics) {
+  _inherits(Opponent, _Phaser$Graphics);
+
+  function Opponent(game, x, y, id) {
+    _classCallCheck(this, Opponent);
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Opponent).call(this, game, x, y));
+
+    _this.beginFill(0xFFFFFF, 1);
+    _this.drawCircle(0, 0, 100);
+    _this.sprite = game.add.sprite(0, 0);
+    _this.sprite.addChild(_this);
+    game.physics.arcade.enable(_this.sprite);
+    _this.enableBody = true;
+    //this.socket = socket
+
+    console.log('this opponent body', _this.body);
+
+    return _this;
+  }
+
+  _createClass(Opponent, [{
+    key: 'moveOpponent',
+    value: function moveOpponent(data) {
+      console.log('move opponent', data);
+      switch (data.move.direction) {
+        case 'left':
+          this.sprite.body.velocity.x = -100;
+          break;
+        case 'right':
+          this.sprite.body.velocity.x = 100;
+          break;
+        case 'down':
+          this.sprite.body.velocity.y = 100;
+          break;
+        case 'up':
+          this.sprite.body.velocity.y = -100;
+          break;
+        case 'stopX':
+          this.sprite.body.velocity.x = 0;
+          break;
+        case 'stopY':
+          this.sprite.body.velocity.y = 0;
+          break;
+        default:
+          this.sprite.velocity.x = 0;
+          this.sprite.velocity.y = 0;
+      }
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      // this.game.debug.body(this.sprite)
+
+    }
+  }]);
+
+  return Opponent;
+}(Phaser.Graphics);
+
+exports.default = Opponent;
+
+},{}],50:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && (typeof call === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var Player = function (_Phaser$Graphics) {
+  _inherits(Player, _Phaser$Graphics);
+
+  function Player(game, x, y, socket) {
+    _classCallCheck(this, Player);
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Player).call(this, game, x, y));
+
+    _this.beginFill(0xFFFFFF, 1);
+    _this.drawCircle(0, 0, 100);
+    _this.sprite = game.add.sprite(0, 0);
+    _this.sprite.addChild(_this);
+    game.physics.arcade.enable(_this.sprite);
+    _this.enableBody = true;
+    _this.socket = socket;
+    _this.physicsBodyType = Phaser.Physics.ARCADE;
+    _this.pressLeft = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+    _this.pressRight = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+    _this.pressUp = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+    _this.pressShift = game.input.keyboard.addKey(Phaser.KeyCode.SHIFT);
+    _this.pressSpace = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+    _this.pressDown = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+    console.log('this body', _this.body);
+    _this.socket.emit('created', {
+      player: {
+        x: _this.sprite.x,
+        y: _this.sprite.y
+      }
+    });
+    _this.socket.on('move', function (data) {
+      switch (data.direction) {
+        case 'left':
+          _this.sprite.body.velocity.x = -100;
+          break;
+        case 'right':
+          _this.sprite.body.velocity.x = 100;
+          break;
+        case 'down':
+          _this.sprite.body.velocity.y = 100;
+          break;
+        case 'up':
+          _this.sprite.body.velocity.y = -100;
+          break;
+        case 'stopX':
+          _this.sprite.body.velocity.x = 0;
+          break;
+        case 'stopY':
+          _this.sprite.body.velocity.y = 0;
+          break;
+        default:
+          _this.velocity.x = 0;
+          _this.velocity.y = 0;
+      }
+    });
+
+    return _this;
+  }
+
+  _createClass(Player, [{
+    key: 'move',
+    value: function move(player, direction) {
+      player.socket.emit('move', {
+        player: {
+          x: player.sprite.x,
+          y: player.sprite.y
+        },
+        direction: direction
+      });
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      // this.game.debug.body(this.sprite)
+      // this.game.playerText.setText('has updated: true')
+      if (this.pressRight.isDown) {
+        this.move(this, 'right');
+        // this.sprite.body.velocity.x = 100
+        // console.log('keyboard movement')
+      } else if (this.pressLeft.isDown) {
+          this.move(this, 'left');
+          // this.sprite.body.velocity.x = -100
+          // console.log('keyboard movement')
+        } else if (Math.abs(this.sprite.body.velocity.x) > 0) {
+            this.move(this, 'stopX');
+          }
+      if (this.pressUp.isDown) {
+        this.move(this, 'up');
+        // this.sprite.body.velocity.y = -100
+        // console.log('keyboard movement')
+      } else if (this.pressDown.isDown) {
+          this.move(this, 'down');
+          // this.sprite.body.velocity.y = 100
+          // console.log('keyboard movement')
+        } else if (Math.abs(this.sprite.body.velocity.y) > 0) {
+            this.move(this, 'stopY');
+          }
+    }
+  }]);
+
+  return Player;
+}(Phaser.Graphics);
+
+exports.default = Player;
+
+},{}],51:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7400,7 +7636,7 @@ var RainbowText = function (_Phaser$Text) {
 
 exports.default = RainbowText;
 
-},{}],50:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7424,6 +7660,14 @@ var _RainbowText2 = _interopRequireDefault(_RainbowText);
 var _socket = require('socket.io-client');
 
 var _socket2 = _interopRequireDefault(_socket);
+
+var _Player = require('objects/Player');
+
+var _Player2 = _interopRequireDefault(_Player);
+
+var _Opponent = require('objects/Opponent');
+
+var _Opponent2 = _interopRequireDefault(_Opponent);
 
 function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
@@ -7461,21 +7705,58 @@ var GameState = function (_Phaser$State) {
 	_createClass(GameState, [{
 		key: 'create',
 		value: function create() {
+			var _this2 = this;
+
 			socket = this.state.states['GameState'].socket;
 			var initialState = this.state.states['GameState'].initialData;
 			console.log(initialState);
-			socket.emit('my other event', 'message:', Date.now());
+			//socket.emit(`my other event`, 'message:', Date.now())
 			this.game.world.setBounds(-(initialState.world.size.x / 2), -(initialState.world.size.y / 2), initialState.world.size.x / 2, initialState.world.size.y / 2);
 			var center = { x: this.game.world.centerX, y: this.game.world.centerY };
 			//let text = new RainbowText(this.game, center.x, center.y, "- phaser -\nwith a sprinkle of\nES6 dust!");
 			//text.anchor.set(0.5);
 			this.game.physics.startSystem(Phaser.Physics.ARCADE);
 			this.game.world.enableBody = true;
-			var graphics = this.game.add.graphics(center.x, center.y);
-			graphics.beginFill(0xFFFFFF, 1);
-			graphics.drawCircle(0, 0, 100);
-			//this.game.camera.follow(text)
-			this.game.camera.follow(graphics);
+			this.game.player = new _Player2.default(this.game, center.x, center.y, socket);
+			this.game.add.existing(this.game.player);
+			this.game.camera.follow(this.game.player);
+			this.game.camera.x = initialState.start.x;
+			this.game.camera.y = initialState.start.y;
+			this.game.randomText = this.game.add.text(0, 100, 'Time left: ' + 10, {
+				font: '30px Arial',
+				fill: '#ff0044',
+				align: 'center'
+			});
+
+			this.players = [];
+			console.log('existing players:', initialState.players);
+			for (var player in initialState.players) {
+				this.players[player] = new _Opponent2.default(this.game, center.x, center.y, player);
+				console.log('player:', player);
+			}
+			this.game.randomText.fixedToCamera = true;
+
+			this.socket.on('newPlayer', function (data) {
+				console.log('new player:', data);
+				_this2.players[data.id] = new _Opponent2.default(_this2.game, data.player.x, data.player.y, data.id);
+				_this2.game.add.existing(_this2.players[data.id]);
+			});
+			this.socket.on('opponentMove', function (data) {
+				// console.log('opponentMove:', data)
+				console.log('this:', data.id);
+				console.log('players:', _this2.players);
+				_this2.players[data.id].moveOpponent(data);
+			});
+		}
+	}, {
+		key: 'update',
+		value: function update() {
+			this.game.debug.bodyInfo(this.game.player.sprite);
+			// this.game.player.update()
+			this.players.forEach(function (player, idx) {
+				this.game.debug.body(player.sprite);
+			});
+			this.game.randomText.setText('Time: ' + Date.now());
 		}
 	}]);
 
@@ -7484,5 +7765,5 @@ var GameState = function (_Phaser$State) {
 
 exports.default = GameState;
 
-},{"objects/RainbowText":49,"socket.io-client":34}]},{},[48])
+},{"objects/Opponent":49,"objects/Player":50,"objects/RainbowText":51,"socket.io-client":34}]},{},[48])
 //# sourceMappingURL=game.js.map

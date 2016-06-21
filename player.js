@@ -1,8 +1,8 @@
 module.exports = {
   startingLocations: {
     one: {
-      x: 0,
-      y: 0
+      x: 15360,
+      y: 15360
     },
     two: {
       x: 50,
